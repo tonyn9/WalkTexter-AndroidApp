@@ -1,3 +1,4 @@
+
 # Built application files
 *.apk
 *.ap_
@@ -35,6 +36,19 @@ captures/
 # Intellij
 *.iml
 .idea/workspace.xml
+/.idea/libraries
 
 # Keystore files
 *.jks
+
+.DS_Store
+.externalNativeBuild
+
+
+
+
+
+
+
+
+
