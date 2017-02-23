@@ -1,5 +1,6 @@
 package com.example.tony.walktexter2;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,6 +8,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,7 +26,7 @@ public class WTService extends Service {
     private BluetoothAdapter btAdapter = null;
     Set<BluetoothDevice> pairedDevices;
     // Set notification ID so we can update it
-    int NotificationID = 69;
+    int NotificationID = 60;
 
     private static final UUID BTUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private ConnectingThread CingT;
@@ -98,21 +100,24 @@ public class WTService extends Service {
         } else{
             if (btAdapter.isEnabled()) {
                 Log.d("Debug Bluetooth", "Bluetooth enabled. BT adress : " + btAdapter.getAddress()
-                        + "BT name : " + btAdapter.getName());
+                        + " BT name : " + btAdapter.getName());
                 try{
                     // try to connect
                     pairedDevices = btAdapter.getBondedDevices();
                     for(BluetoothDevice bt : pairedDevices) {
                         // add names
-                        if(bt.getName().equals("Edison-SALT") || bt.getName().equals("rpi-TeamSalt")){
+                        if(bt.getName().equals("rpi-TeamSalt")
+                                || bt.getName().equals(("raspberrypi"))){
+
                             Device = bt;
+                            Log.d("Bluetooth Service", "Device bt is " + Device.getName());
                         }
                     }
                     CingT = new ConnectingThread(Device);
                     CingT.start();
                 } catch(IllegalArgumentException e){
                     Log.d("Debug Bluetooth", "Problem Connecting");
-                    Toast.makeText(this, "problem conencting to device", Toast.LENGTH_LONG);
+                    Toast.makeText(this, "problem connecting to device", Toast.LENGTH_LONG);
                     stopSelf();
                 }
             } else{
@@ -145,10 +150,10 @@ public class WTService extends Service {
         public ConnectingThread(BluetoothDevice device) {
             Log.d("Debug Bluetooth", "Inside connecting thread");
             BluetoothSocket temp = null;
-            mmDevice = device;
+            this.mmDevice = device;
             Log.d("Debug Bluetooth", "Bluetooth UUID : " + BTUUID);
             try{
-                temp = mmDevice.createRfcommSocketToServiceRecord(BTUUID);
+                temp = device.createRfcommSocketToServiceRecord(BTUUID);
             }catch (IOException e) {
                 Log.d("Debug Bluetooth", "SOCKET CREATION FAILED :" + e.toString());
                 Log.d("Bluetooth Service", "SOCKET CREATION FAILED, STOPPING SERVICE");
@@ -159,13 +164,16 @@ public class WTService extends Service {
 
         @Override
         public void run(){
-            super.run();
+            //super.run();
             Log.d("Debug Bluetooth","In Connecting thread run()");
 
             //cancels discovery usually disabled
-            btAdapter.cancelDiscovery();
+            //btAdapter.cancelDiscovery();
             try {
-                Socket.connect();
+                if (!Socket.isConnected()){
+                    Log.d("Bluetooth Service", "Socket is not connected. Connecting...");
+                    Socket.connect();
+                }
                 Log.d("Debug Bluetooth", " Bluetooth Socket Connected");
                 CedT = new ConnectedThread(Socket);
                 CedT.start();
@@ -234,12 +242,37 @@ public class WTService extends Service {
             //keep looping to listen for received messages
             while (true && !stopThread){
                 try {
+                    Log.d("Bluetooth Service", "waiting for something");
                     bytes = InStream.read(buffer);
                     String readMessage = new String(buffer, 0, bytes);
-                    Log.d("Debug Bluetooth listen", "Connected Thread" + readMessage);
+                    Log.d("Debug Bluetooth listen", "Connected Thread : " + readMessage);
+
+                    String arr[] = readMessage.split(":");
+                    if (arr[0].equals("status") && arr[1].equals("warning") ){
+                        //launch notification
+                        Log.d("Notification services", "Making Notifications");
+                        /*
+                        NotificationCompat.Builder mBuilder =
+                                new NotificationCompat.Builder(getApplicationContext())
+                                        .setSmallIcon(R.drawable.ic_stat_wts)
+                                        .setContentTitle("My notification")
+                                        .setContentText("Watch out yo");*/
+                        //int mNotificationId = 060;
+                        //NotificationManager mNotifyMgr =
+                        //        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        Log.d("Notification services", "Am i getting this far?");
+                        //mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                        WTNotifications alert = new WTNotifications();
+                        alert.notify(getApplicationContext(), "Object Ahead", NotificationID);
+                    }else if (arr[1].equals( "test")){
+                        // ignore?
+                        Toast.makeText(getApplicationContext(), "We Guchi", Toast.LENGTH_LONG);
+                    }else{
+                        Log.d("message", "arr[0] : " + arr[0] + " arr[1] " +arr[1]);
+                    }
 
                     //send bytes to UI activity via handler
-                    bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                    //bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
                 } catch (IOException e){
                     Log.d("Debug Bluetooth", e.toString());
                     Log.d("Bluetooth Service", "unable to read during listen");
@@ -267,7 +300,7 @@ public class WTService extends Service {
                 OutStream.close();
             } catch(IOException e){
                 Log.d("Debug Bluetooth", e.toString());
-                Log.d("Bluetooth Service", "Stream close failed, stoping");
+                Log.d("Bluetooth Service", "Stream close failed, stopping");
                 stopSelf();
             }
         }

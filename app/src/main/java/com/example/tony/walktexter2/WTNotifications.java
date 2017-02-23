@@ -51,10 +51,8 @@ public class WTNotifications {
 
 
         final String ticker = exampleString;
-        final String title = res.getString(
-                R.string.wts_notification_title_template, exampleString);
-        final String text = res.getString(
-                R.string.wts_notification_placeholder_text_template, exampleString);
+        final String title = "WalkTexter Warning";
+        final String text = "Watch out ahead of you baby <3";
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 
@@ -72,7 +70,7 @@ public class WTNotifications {
 
                 // Use a default priority (recognized on devices running Android
                 // 4.1 or later)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
 
                 // Provide a large icon, shown with the notification in the
                 // notification drawer on devices running Android 3.0 or later.
