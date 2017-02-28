@@ -13,7 +13,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
         android:id="@+id/textView" />
 
     <Button
@@ -23,7 +22,8 @@
         android:layout_below="@+id/StartButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="66dp"
-        android:id="@+id/BTbutton" />
+        android:id="@+id/BTbutton"
+        android:onClick="statusWTService"/>
 
     <Button
         android:text="Start Service"

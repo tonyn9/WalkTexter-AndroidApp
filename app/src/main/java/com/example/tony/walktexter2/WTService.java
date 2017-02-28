@@ -37,6 +37,7 @@ public class WTService extends Service {
     public WTService() {
     }
 
+    //should receive data
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -122,7 +123,7 @@ public class WTService extends Service {
                 }
             } else{
                 Log.d("Bluetooth Service", "Bluetooth not on. Please turn on");
-                Toast.makeText(this, "turn on bluetooth", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "turn on bluetooth", Toast.LENGTH_LONG);
                 stopSelf();
             }
         }
@@ -130,6 +131,11 @@ public class WTService extends Service {
 
     @Override
     public void onDestroy(){
+        // before destroying self, send a close message
+        if (CedT != null){
+            // tell the pi to shut down before closing the stream
+            CedT.write("Close");
+        }
         super.onDestroy();
         bluetoothIn.removeCallbacksAndMessages(null);
         stopThread = true;
