@@ -43,14 +43,4 @@
         android:layout_above="@+id/BTbutton"
         android:layout_toEndOf="@+id/BTbutton"
         android:onClick="stopWTService"/>
-
-    <TextView
-        android:text="Status : "
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/BTbutton"
-        android:layout_toStartOf="@+id/BTbutton"
-        android:layout_marginTop="43dp"
-        android:id="@+id/StatusText" />
 </RelativeLayout>
