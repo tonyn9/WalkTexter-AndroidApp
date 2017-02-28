@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -41,16 +40,10 @@ public class WTService extends Service {
     //should receive data
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        // TODO: Return the communication channel to the service.
+        //throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
-
-    public class LocalBinder extends Binder {
-        WTService getService(){
-            return WTService.this;
-        }
-    }
-
-    private final IBinder mBinder = new LocalBinder();
 
     @Override
     public void onCreate() {
@@ -104,7 +97,6 @@ public class WTService extends Service {
     private void checkBlueToothState() {
         if (btAdapter == null){
             Log.d("Bluetooth Service" , "Bluetooth adapter missing. Device not supported");
-            Toast.makeText(WTService.this, "Bluetooth adapter missing. Device not supported.", Toast.LENGTH_LONG).show();
             stopSelf();
         } else{
             if (btAdapter.isEnabled()) {
@@ -131,7 +123,7 @@ public class WTService extends Service {
                 }
             } else{
                 Log.d("Bluetooth Service", "Bluetooth not on. Please turn on");
-                Toast.makeText(WTService.this, "turn on bluetooth", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "turn on bluetooth", Toast.LENGTH_LONG);
                 stopSelf();
             }
         }
@@ -192,7 +184,7 @@ public class WTService extends Service {
                 CedT = new ConnectedThread(Socket);
                 CedT.start();
                 Log.d("Debug Bluetooth", "Connected thread started");
-                Toast.makeText(WTService.this, "Connected to " + Device.getName(), Toast.LENGTH_LONG).show();
+
                 CedT.write("test");
             }catch (IOException e){
                 try{

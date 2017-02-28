@@ -7,8 +7,6 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    Intent intent;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,15 +15,12 @@ public class MainActivity extends AppCompatActivity {
 
     //start the service
     public void startWTService(View view){
-        intent = new Intent(this, WTService.class);
-        startService(intent);
+        startService(new Intent(this, WTService.class));
     }
 
     //stop the service
     public void stopWTService(View view){
-        if(intent != null){
-            stopService(intent);
-        }
+        stopService(new Intent(this, WTService.class));
         finish();
     }
 
