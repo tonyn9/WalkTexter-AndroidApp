@@ -21,5 +21,6 @@ public class MainActivity extends AppCompatActivity {
     //stop the service
     public void stopWTService(View view){
         stopService(new Intent(this, WTService.class));
+        finish();
     }
 }
