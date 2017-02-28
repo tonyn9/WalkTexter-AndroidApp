@@ -21,14 +21,5 @@ public class MainActivity extends AppCompatActivity {
     //stop the service
     public void stopWTService(View view){
         stopService(new Intent(this, WTService.class));
-        finish();
-    }
-
-    //send a message to the service to get data.
-    //for ex:
-    //if disconnected
-    //if connected, get name of device connected
-    public void statusWTService(View view){
-
     }
 }
