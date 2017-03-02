@@ -216,6 +216,11 @@ public class WTService extends Service {
         private final InputStream InStream;
         private final OutputStream OutStream;
 
+        private final String WalkString = "Walk";
+        private final String DontWalkString = "Don't Walk";
+        private final String StopString = "Stop Sign Ahead";
+        private final String SensorString = "Object in front";
+
         public ConnectedThread (BluetoothSocket socket){
             Log.d("Debug Bluetooth", "In Connected Thread");
             InputStream tempIn = null;
@@ -251,17 +256,8 @@ public class WTService extends Service {
                     if (arr[0].equals("status") && arr[1].equals("warning") ){
                         //launch notification
                         Log.d("Notification services", "Making Notifications");
-                        /*
-                        NotificationCompat.Builder mBuilder =
-                                new NotificationCompat.Builder(getApplicationContext())
-                                        .setSmallIcon(R.drawable.ic_stat_wts)
-                                        .setContentTitle("My notification")
-                                        .setContentText("Watch out yo");*/
-                        //int mNotificationId = 060;
-                        //NotificationManager mNotifyMgr =
-                        //        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                        Log.d("Notification services", "Am i getting this far?");
-                        //mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+
                         WTNotifications alert = new WTNotifications();
                         alert.notify(getApplicationContext(), "Object Ahead", NotificationID);
                     }else if (arr[1].equals( "test")){
@@ -279,6 +275,41 @@ public class WTService extends Service {
                     stopSelf();
                     break;
                 }
+            }
+        }
+
+        public void readMessage(String check){
+            String arr[] = check.split(":");
+            // if format is status:warning:(int)
+            // bit3 bit2 bit1 bit0
+            // walk dont_walk stop sensor
+            if (arr[0].equals("status") && arr[1].equals("warning")){
+                try{
+                    String bits = Integer.toBinaryString(Integer.parseInt(arr[2]));
+                    // sets amount of bits
+                    if(bits.length() < 4){
+                        switch(bits.length()){
+                            case (1) : bits = "000" + bits;
+                                        break;
+                            case (2) : bits = "00" + bits;
+                                        break;
+                            case (3) : bits = "0" + bits;
+                                        break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    char bitMessage[] = bits.toCharArray();
+
+
+                }catch (IndexOutOfBoundsException e){
+                    Log.d("Debug Message", "No 3rd argument" + e.toString());
+                }
+            }else if(arr[1].equals("test")){
+                Log.d("message", "preliminary connection");
+            }else{
+                Log.d("message", "arr[0] : " + arr[0] + " arr[1] " +arr[1]);
             }
         }
 
