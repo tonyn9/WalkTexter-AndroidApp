@@ -48,7 +48,7 @@ public class WTService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d("Bluetooth Service","Service is created");
-        Toast.makeText(this, "Service Created", Toast.LENGTH_LONG);
+        //Toast.makeText(this, "Service Created", Toast.LENGTH_LONG).show();
         stopThread = false;
     }
 
@@ -96,6 +96,7 @@ public class WTService extends Service {
     private void checkBlueToothState() {
         if (btAdapter == null){
             Log.d("Bluetooth Service" , "Bluetooth adapter missing. Device not supported");
+            Toast.makeText(this, "Device not supported. Bluetooth adapter missing.", Toast.LENGTH_LONG).show();
             stopSelf();
         } else{
             if (btAdapter.isEnabled()) {
@@ -117,12 +118,12 @@ public class WTService extends Service {
                     CingT.start();
                 } catch(IllegalArgumentException e){
                     Log.d("Debug Bluetooth", "Problem Connecting");
-                    Toast.makeText(this, "problem connecting to device", Toast.LENGTH_LONG);
+                    Toast.makeText(this, "Problem connecting to device", Toast.LENGTH_LONG).show();
                     stopSelf();
                 }
             } else{
                 Log.d("Bluetooth Service", "Bluetooth not on. Please turn on");
-                Toast.makeText(this, "turn on bluetooth", Toast.LENGTH_LONG);
+                Toast.makeText(this, "Bluetooth not enabled. Please turn on.", Toast.LENGTH_LONG).show();
                 stopSelf();
             }
         }
@@ -178,7 +179,6 @@ public class WTService extends Service {
                 CedT = new ConnectedThread(Socket);
                 CedT.start();
                 Log.d("Debug Bluetooth", "Connected thread started");
-
                 CedT.write("test");
             }catch (IOException e){
                 try{
@@ -216,13 +216,12 @@ public class WTService extends Service {
         private final InputStream InStream;
         private final OutputStream OutStream;
 
-        private final String WalkString = "Walk";
-        private final String DontWalkString = "Don't Walk";
-        private final String StopString = "Stop Sign Ahead";
-        private final String SensorString = "Object in front";
+
+        private String[] WarningArray;
 
         public ConnectedThread (BluetoothSocket socket){
             Log.d("Debug Bluetooth", "In Connected Thread");
+
             InputStream tempIn = null;
             OutputStream tempOut = null;
 
@@ -239,7 +238,18 @@ public class WTService extends Service {
             OutStream = tempOut;
         }
 
+        private void WarningSetUp(){
+            WarningArray = new String[4];
+            WarningArray[0] = "Walk.";
+            WarningArray[1] = "Don't Walk.";
+            WarningArray[2] = "Stop Sign Ahead.";
+            WarningArray[3] = "Object in front.";
+        }
+
         public void run(){
+            // setting up string
+            WarningSetUp();
+
             Log.d("Debug Bluetooth","In connected thread run");
             byte[] buffer = new byte[256];
             int bytes;
@@ -252,20 +262,7 @@ public class WTService extends Service {
                     String readMessage = new String(buffer, 0, bytes);
                     Log.d("Debug Bluetooth listen", "Connected Thread : " + readMessage);
 
-                    String arr[] = readMessage.split(":");
-                    if (arr[0].equals("status") && arr[1].equals("warning") ){
-                        //launch notification
-                        Log.d("Notification services", "Making Notifications");
-
-
-                        WTNotifications alert = new WTNotifications();
-                        alert.notify(getApplicationContext(), "Object Ahead", NotificationID);
-                    }else if (arr[1].equals( "test")){
-                        // ignore?
-                        Toast.makeText(getApplicationContext(), "We Guchi", Toast.LENGTH_LONG);
-                    }else{
-                        Log.d("message", "arr[0] : " + arr[0] + " arr[1] " +arr[1]);
-                    }
+                    StringCheck(readMessage);
 
                     //send bytes to UI activity via handler
                     //bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
@@ -278,7 +275,8 @@ public class WTService extends Service {
             }
         }
 
-        public void readMessage(String check){
+        public void StringCheck(String check){
+            Log.d("Debug String Check", "Connected Thread : " + check);
             String arr[] = check.split(":");
             // if format is status:warning:(int)
             // bit3 bit2 bit1 bit0
@@ -300,11 +298,26 @@ public class WTService extends Service {
                         }
                     }
 
+
                     char bitMessage[] = bits.toCharArray();
-
-
+                    Log.d("Bit array", String.valueOf(bitMessage));
+                    String TitleWarning = "Warning: ";
+                    for (int i = 0; i < bitMessage.length; i++){
+                        //System.out.println("in for loop");
+                        if (String.valueOf(bitMessage[i]).equals("1")){
+                            Log.d("bitMessage for loop", WarningArray[i]);
+                            TitleWarning += WarningArray[i];
+                            TitleWarning += " ";
+                            Log.d("Concat", "Concatted as: " + TitleWarning);
+                        }
+                    }
+                    WTNotifications alert = new WTNotifications();
+                    Log.d("Debug Title Warning", "Title is: " + TitleWarning);
+                    alert.notify(getApplicationContext(), TitleWarning, NotificationID);
                 }catch (IndexOutOfBoundsException e){
                     Log.d("Debug Message", "No 3rd argument" + e.toString());
+                }catch (NumberFormatException num){
+                    Log.d("Debug Message", "Test app is funky" + num.toString());
                 }
             }else if(arr[1].equals("test")){
                 Log.d("message", "preliminary connection");

@@ -52,7 +52,7 @@ public class WTNotifications {
 
         final String ticker = exampleString;
         final String title = "WalkTexter Warning";
-        final String text = "Watch out ahead of you baby <3";
+        final String text = exampleString;
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 

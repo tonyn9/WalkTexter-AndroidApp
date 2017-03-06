@@ -16,30 +16,22 @@
         android:id="@+id/textView" />
 
     <Button
-        android:text="Status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/StartButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="66dp"
-        android:id="@+id/BTbutton" />
-
-    <Button
         android:text="Start Service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="50dp"
         android:id="@+id/StartButton"
+        android:onClick="startWTService"
         android:layout_below="@+id/textView"
-        android:layout_toStartOf="@+id/BTbutton"
-        android:onClick="startWTService"/>
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="Stop Service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/StopButton"
-        android:layout_above="@+id/BTbutton"
-        android:layout_toEndOf="@+id/BTbutton"
-        android:onClick="stopWTService"/>
+        android:onClick="stopWTService"
+        android:layout_below="@+id/StartButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="70dp" />
 </RelativeLayout>
