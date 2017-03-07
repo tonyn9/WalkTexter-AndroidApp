@@ -47,7 +47,17 @@ public class WTNotifications {
 
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
+
+        String[] arr = exampleString.split(".");
+
+        if ( arr[0].equals("Walk")){
+            final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.gosign);
+        } else if( arr[0].equals("Don't Walk.")){
+            final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.stopsign);
+        }else{
+            final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
+        }
+
 
 
         final String ticker = exampleString;
