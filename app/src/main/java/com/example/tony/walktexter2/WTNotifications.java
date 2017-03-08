@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 /**
  * Helper class for showing and canceling wts
@@ -48,18 +49,23 @@ public class WTNotifications {
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
 
-        final Bitmap picture;
+        Bitmap picture;
+        // final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.warning_sign);
 
-        String[] arr = exampleString.split(".");
 
-        if ( arr[0].equals("Walk")){
-            picture = BitmapFactory.decodeResource(res, R.drawable.gosign);
-        } else if( arr[0].equals("Don't Walk.")){
-            picture = BitmapFactory.decodeResource(res, R.drawable.stopsign);
-        }else{
+
+        try {
+            if (exampleString.contains("Warning: Walk.")) {
+                picture = BitmapFactory.decodeResource(res, R.drawable.gosign);
+            } else if (exampleString.contains("Warning: Don't Walk.")) {
+                picture = BitmapFactory.decodeResource(res, R.drawable.stopsign);
+            } else {
+                picture = BitmapFactory.decodeResource(res, R.drawable.warning_sign);
+            }
+        }catch (IndexOutOfBoundsException e){
+            Log.d("Notifications Debug", e.toString());
             picture = BitmapFactory.decodeResource(res, R.drawable.warning_sign);
         }
-
 
 
         final String ticker = exampleString;
@@ -74,7 +80,7 @@ public class WTNotifications {
 
                 // Set required fields, including the small icon, the
                 // notification title, and text.
-                .setSmallIcon(R.drawable.ic_stat_wts)
+                .setSmallIcon(R.drawable.salt_icon)
                 .setContentTitle(title)
                 .setContentText(text)
 
