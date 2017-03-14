@@ -13,4 +13,9 @@
     <color name="global_color_green_control_activated">#ffc107</color>
     <!-- End of For Splash Activity -->
 
+    <!-- For Plus/More Info Floating Action Buttons -->
+    <color name="fab1_color">#FF4081</color>
+    <color name="fab2_color">#2196F3</color>
+    <!-- End of For Plus/More Info Floating Action Buttons -->
+
 </resources>
