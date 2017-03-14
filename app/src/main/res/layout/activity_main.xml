@@ -40,6 +40,21 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="90dp" />
 
+    <TextView
+        android:text="How to:\n Step 1: Press 'Start Service'\n Step 2: Start Walking\n Step 3: Start Texting\n
+ **Note: User may change between\n      different activities during their\n      use of the WalkTexter\n\n
+How to end service:\n  Step 1: Press 'Stop Service'\n"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="@dimen/fab_margin_right"
+        android:layout_marginBottom="180dp"
+        android:elevation="6dp"
+        android:id="@+id/fab_text"
+        app:pressedTranslationZ="12dp"
+        android:visibility="invisible"
+        />
+
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

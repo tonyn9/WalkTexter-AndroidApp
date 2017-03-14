@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     //Floating action buttons for plus and moreinfo
     FloatingActionButton fab_plus, fab_moreinfo;
     Animation FabOpen, FabClose, FabClockwise, FabCounterclockwise;
+    TextView howto;
     boolean isOpen = false;
 
     @Override
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         /********** For Floating Action Buttons **********/
         fab_plus = (FloatingActionButton)findViewById(R.id.fab_plus);
         fab_moreinfo = (FloatingActionButton)findViewById(R.id.fab_moreinfo);
+        howto = (TextView)findViewById(R.id.fab_text);
 
         FabOpen = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_open);
         FabClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
@@ -36,11 +39,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (isOpen) {
+                    howto.startAnimation(FabClose);
                     fab_moreinfo.startAnimation(FabClose);
                     fab_plus.startAnimation(FabCounterclockwise);
                     fab_moreinfo.setClickable(false);
                     isOpen = false;
                 } else {
+                    howto.startAnimation(FabOpen);
                     fab_moreinfo.startAnimation(FabOpen);
                     fab_plus.startAnimation(FabClockwise);
                     fab_moreinfo.setClickable(true);
