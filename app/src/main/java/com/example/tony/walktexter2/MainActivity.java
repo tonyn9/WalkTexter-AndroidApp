@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /********** For Floating Action Buttons **********/
-
         fab_plus = (FloatingActionButton)findViewById(R.id.fab_plus);
         fab_moreinfo = (FloatingActionButton)findViewById(R.id.fab_moreinfo);
 
