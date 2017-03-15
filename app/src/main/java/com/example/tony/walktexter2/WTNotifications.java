@@ -134,7 +134,7 @@ public class WTNotifications {
                 // should ensure that the activity in this notification's
                 // content intent provides access to the same actions in
                 // another way.
-                .addAction(
+ /*               .addAction(
                         R.drawable.ic_action_stat_share,
                         res.getString(R.string.action_share),
                         PendingIntent.getActivity(
@@ -143,11 +143,11 @@ public class WTNotifications {
                                 Intent.createChooser(new Intent(Intent.ACTION_SEND)
                                         .setType("text/plain")
                                         .putExtra(Intent.EXTRA_TEXT, "Be careful ahead of you"), "Walk Texter Alert"),
-                                PendingIntent.FLAG_UPDATE_CURRENT))
-                .addAction(
+                                PendingIntent.FLAG_UPDATE_CURRENT))*/
+ /*               .addAction(
                         R.drawable.ic_action_stat_reply,
                         res.getString(R.string.action_reply),
-                        null)
+                        null)*/
 
                 // Automatically dismiss the notification when it is touched.
                 .setAutoCancel(true);

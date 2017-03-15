@@ -1,6 +1,5 @@
 package com.example.tony.walktexter2;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,7 +7,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,7 +18,7 @@ import java.util.UUID;
 
 public class WTService extends Service {
 
-    final int handlerState = 0;
+
     Handler bluetoothIn;
     BluetoothDevice Device;
     private BluetoothAdapter btAdapter = null;
@@ -32,7 +30,7 @@ public class WTService extends Service {
     private ConnectingThread CingT;
     private ConnectedThread CedT;
     private boolean stopThread;
-    private StringBuilder recDataString = new StringBuilder();
+
 
     public WTService() {
     }
@@ -58,34 +56,7 @@ public class WTService extends Service {
         Log.d("Bluetooth Service", "Service Started");
         Toast.makeText(this, "Walk and Text Responsibly", Toast.LENGTH_LONG);
         bluetoothIn = new Handler(){
-
-            public void handleMesage(android.os.Message msg){
-                Log.d("Debug","handle Message");
-                if (msg.what == handlerState){
-                    String readMessage = (String) msg.obj;
-                    recDataString.append(readMessage);
-
-                    Log.d("Recorded", recDataString.toString());
-
-                    //do stuff here
-                    //Notify User Here
-                    String arr[] = readMessage.split(":");
-                    if (arr[0] == "status" && arr[1] == "warning" ){
-                        //launch notification
-                        WTNotifications alert = new WTNotifications();
-                        alert.notify(getApplicationContext(), "Object Ahead", NotificationID);
-                    }else if (arr[1] == "test"){
-                        // ignore?
-                        Toast.makeText(getApplicationContext(), "We Guchi", Toast.LENGTH_LONG);
-                    }
-
-
-                    recDataString.delete(0, recDataString.length()); // deletes string data
-                }
-            }
-
         };
-
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         checkBlueToothState();
@@ -253,7 +224,6 @@ public class WTService extends Service {
             Log.d("Debug Bluetooth","In connected thread run");
             byte[] buffer = new byte[256];
             int bytes;
-
             //keep looping to listen for received messages
             while (true && !stopThread){
                 try {
